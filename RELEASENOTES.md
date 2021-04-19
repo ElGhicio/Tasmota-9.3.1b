@@ -77,6 +77,9 @@ The attached binaries can also be downloaded from http://ota.tasmota.com/tasmota
 [List](MODULES.md) of embedded modules.
 
 [Complete list](BUILDS.md) of available feature and sensors.
+## Changelog v9.3.1b El Ghicio
+### Added
+- Web HTTPS, Port and flag for ssl
 
 ## Changelog v9.3.1 Kenneth
 ### Added
