@@ -244,8 +244,8 @@ const char HTTP_MSG_RSTRT[] PROGMEM =
 const char HTTP_FORM_LOGIN[] PROGMEM =
   "<fieldset>"
   "<form method='post' action='/'>"
-  "<p><b>" D_USER "</b><br><input name='USER1' placeholder='" D_USER "'></p>"
-  "<p><b>" D_PASSWORD "</b><br><input name='PASS1' type='password' placeholder='" D_PASSWORD "'></p>"
+  "<p><b>" D_USER "</b><br><input name='USER1' placeholder='" D_USER "' maxlength='9'></p>"
+  "<p><b>" D_PASSWORD "</b><br><input name='PASS1' type='password' placeholder='" D_PASSWORD "' maxlength='10'></p>"
   "<br>"
   "<button>" D_OK "</button>"
   "</form></fieldset>";
@@ -268,18 +268,18 @@ const char HTTP_FORM_MODULE[] PROGMEM =
 const char HTTP_FORM_WIFI[] PROGMEM =
   "<fieldset><legend><b>&nbsp;" D_WIFI_PARAMETERS "&nbsp;</b></legend>"
   "<form method='get' action='wi'>"
-  "<p><b>" D_AP1_SSID "</b> (" STA_SSID1 ")<br><input id='s1' placeholder=\"" STA_SSID1 "\" value=\"%s\"></p>"  // Need \" instead of ' to be able to use ' in text (#8489)
-  "<p><label><b>" D_AP1_PASSWORD "</b><input type='checkbox' onclick='sp(\"p1\")'></label><br><input id='p1' type='password' placeholder=\"" D_AP1_PASSWORD "\" value=\"" D_ASTERISK_PWD "\"></p>"
-  "<p><b>" D_AP2_SSID "</b> (" STA_SSID2 ")<br><input id='s2' placeholder=\"" STA_SSID2 "\" value=\"%s\"></p>"
-  "<p><label><b>" D_AP2_PASSWORD "</b><input type='checkbox' onclick='sp(\"p2\")'></label><br><input id='p2' type='password' placeholder=\"" D_AP2_PASSWORD "\" value=\"" D_ASTERISK_PWD "\"></p>"
-  "<p><b>" D_HOSTNAME "</b> (%s)<br><input id='h' placeholder=\"%s\" value=\"%s\"></p>"
-  "<p><b>" D_CORS_DOMAIN "</b><input id='c' placeholder=\"" CORS_DOMAIN "\" value=\"%s\"></p>";
+  "<p><b>" D_AP1_SSID "</b> (" STA_SSID1 ")<br><input id='s1' placeholder=\"" STA_SSID1 "\" value=\"%s\" maxlength='12'></p>"  // Need \" instead of ' to be able to use ' in text (#8489)
+  "<p><label><b>" D_AP1_PASSWORD "</b><input type='checkbox' onclick='sp(\"p1\")'></label><br><input id='p1' type='password' maxlength='10' placeholder=\"" D_AP1_PASSWORD "\" value=\"" D_ASTERISK_PWD "\"></p>"
+  "<p><b>" D_AP2_SSID "</b> (" STA_SSID2 ")<br><input id='s2' placeholder=\"" STA_SSID2 "\" value=\"%s\" maxlength='12'></p>"
+  "<p><label><b>" D_AP2_PASSWORD "</b><input type='checkbox' onclick='sp(\"p2\")'></label><br><input id='p2' type='password' maxlength='10' placeholder=\"" D_AP2_PASSWORD "\" value=\"" D_ASTERISK_PWD "\"></p>"
+  "<p><b>" D_HOSTNAME "</b> (%s)<br><input id='h' placeholder=\"%s\" value=\"%s\" maxlength='20'></p>"
+  "<p><b>" D_CORS_DOMAIN "</b><input id='c' placeholder=\"" CORS_DOMAIN "\" value=\"%s\" maxlength='20'></p>";
 
 const char HTTP_FORM_LOG1[] PROGMEM =
   "<fieldset><legend><b>&nbsp;" D_LOGGING_PARAMETERS "&nbsp;</b>"
   "</legend><form method='get' action='lg'>";
 const char HTTP_FORM_LOG2[] PROGMEM =
-  "<p><b>" D_SYSLOG_HOST "</b> (" SYS_LOG_HOST ")<br><input id='lh' placeholder=\"" SYS_LOG_HOST "\" value=\"%s\"></p>"
+  "<p><b>" D_SYSLOG_HOST "</b> (" SYS_LOG_HOST ")<br><input id='lh' placeholder=\"" SYS_LOG_HOST "\" maxlength='9' value=\"%s\"></p>"
   "<p><b>" D_SYSLOG_PORT "</b> (" STR(SYS_LOG_PORT) ")<br><input id='lp' placeholder='" STR(SYS_LOG_PORT) "' value='%d'></p>"
   "<p><b>" D_TELEMETRY_PERIOD "</b> (" STR(TELE_PERIOD) ")<br><input id='lt' placeholder='" STR(TELE_PERIOD) "' value='%d'></p>";
 
@@ -297,11 +297,11 @@ const char HTTP_FORM_OTHER[] PROGMEM =
   "<p><label><input id='t2' type='checkbox'%s><b>" D_ACTIVATE "</b></label></p>"
   "</fieldset>"
   "<br>"
-  "<label><b>" D_WEB_ADMIN_PASSWORD "</b><input type='checkbox' onclick='sp(\"wp\")'></label><br><input type='txt' placeholder=\"" WEB_USERNAME "\" value=\"" WEB_USERNAME "\" readonly><br><input id='wp' type='password' placeholder=\"" D_WEB_ADMIN_PASSWORD "\" value=\"" D_ASTERISK_PWD "\"><br>"
+  "<label><b>" D_WEB_ADMIN_PASSWORD "</b><input type='checkbox' onclick='sp(\"wp\")'></label><br><input type='txt' placeholder=\"" WEB_USERNAME "\" value=\"" WEB_USERNAME "\" readonly><br><input id='wp' type='password' maxlength='10' placeholder=\"" D_WEB_ADMIN_PASSWORD "\" value=\"" D_ASTERISK_PWD "\"><br>"
   "<br>"
   "<label><input id='b1' type='checkbox'%s><b>" D_MQTT_ENABLE "</b></label><br>"
   "<br>"
-  "<label><b>" D_DEVICE_NAME "</b> (%s)</label><br><input id='dn' placeholder=\"\" value=\"%s\"><br>"
+  "<label><b>" D_DEVICE_NAME "</b> (%s)</label><br><input id='dn' placeholder=\"\" value=\"%s\" maxlength='20'><br>"
   "<br>";
 
 const char HTTP_FORM_END[] PROGMEM =
@@ -556,7 +556,8 @@ const WebServerDispatch_t WebServerDispatchSSL[] PROGMEM = {
   { "rt", HTTP_ANY, HandleResetConfiguration },
   { "in", HTTP_ANY, HandleInformationSSL },
 #endif  // Not FIRMWARE_MINIMAL
-  { "cs", HTTP_OPTIONS, HandlePreflightRequest }
+  { "cs", HTTP_OPTIONS, HandlePreflightRequestSSL },
+  { "cm", HTTP_ANY, HandleHttpCommandSSL }
 };
 
 
@@ -3071,7 +3072,7 @@ void HandleOtherConfiguration(void)
 #endif  // USE_SONOFF_IFAN
   for (uint32_t i = 0; i < maxfn; i++) {
     snprintf_P(stemp, sizeof(stemp), PSTR("%d"), i +1);
-    WSContentSend_P(PSTR("<b>" D_FRIENDLY_NAME " %d</b> (" FRIENDLY_NAME "%s)<br><input id='a%d' placeholder=\"" FRIENDLY_NAME "%s\" value=\"%s\"><p></p>"),
+    WSContentSend_P(PSTR("<b>" D_FRIENDLY_NAME " %d</b> (" FRIENDLY_NAME "%s)<br><input id='a%d' maxlength='20' placeholder=\"" FRIENDLY_NAME "%s\" value=\"%s\"><p></p>"),
       i +1,
       (i) ? stemp : "",
       i,
@@ -3202,12 +3203,19 @@ void HandleResetConfiguration(void)
 
   AddLog(LOG_LEVEL_DEBUG, PSTR(D_LOG_HTTP D_RESET_CONFIGURATION));
 
+  //MP
+  if (Settings.flag_https) {
+    WSContentStopSSL();
+  }
+
   WSContentStart_P(PSTR(D_RESET_CONFIGURATION), !WifiIsInManagerMode());
   WSContentSendStyle();
   WSContentSend_P(PSTR("<div style='text-align:center;'>" D_CONFIGURATION_RESET "</div>"));
   WSContentSend_P(HTTP_MSG_RSTRT);
   WSContentSpaceButton(BUTTON_MAIN);
   WSContentStop();
+
+
 
   char command[CMDSZ];
   snprintf_P(command, sizeof(command), PSTR(D_CMND_RESET " 1"));
@@ -4063,6 +4071,14 @@ void HandlePreflightRequest(void)
   WSSend(200, CT_HTML, "");
 }
 
+void HandlePreflightRequestSSL(void)
+{
+  HttpHeaderCors();
+  WebserverSSL->sendHeader(F("Access-Control-Allow-Methods"), F("GET, POST"));
+  WebserverSSL->sendHeader(F("Access-Control-Allow-Headers"), F("authorization"));
+  WSSendSSL(200, CT_HTML, "");
+}
+
 /*-------------------------------------------------------------------------------------------*/
 
 void HandleHttpCommand(void)
@@ -4116,6 +4132,61 @@ void HandleHttpCommand(void)
   }
   WSContentEnd();
 }
+
+
+void HandleHttpCommandSSL(void)
+{
+  if (!HttpCheckPriviledgedAccessSSL(false)) { return; }
+
+  AddLog(LOG_LEVEL_DEBUG, PSTR(D_LOG_HTTP D_COMMAND));
+
+  if (!WebAuthenticateSSL()) {
+    // Prefer authorization via HTTP header (Basic auth), if it fails, use legacy method via GET parameters
+    char tmp1[33];
+    WebGetArgSSL(PSTR("user"), tmp1, sizeof(tmp1));
+    char tmp2[strlen(SettingsText(SET_WEBPWD)) + 2];  // Need space for an entered password longer than set password
+    WebGetArgSSL(PSTR("password"), tmp2, sizeof(tmp2));
+
+    if (!(!strcmp(tmp1, WEB_USERNAME) && !strcmp(tmp2, SettingsText(SET_WEBPWD)))) {
+      WSContentBeginSSL(401, CT_APP_JSON);
+      WSContentSend_PSSL(PSTR("{\"" D_RSLT_WARNING "\":\"" D_NEED_USER_AND_PASSWORD "\"}"));
+      WSContentEndSSL();
+      return;
+    }
+  }
+
+  WSContentBeginSSL(200, CT_APP_JSON);
+  String svalue = WebserverSSL->arg(F("cmnd"));
+  if (svalue.length() && (svalue.length() < MQTT_MAX_PACKET_SIZE)) {
+    uint32_t curridx = TasmotaGlobal.log_buffer_pointer;
+    TasmotaGlobal.templog_level = LOG_LEVEL_INFO;
+    ExecuteWebCommandSSL((char*)svalue.c_str(), SRC_WEBCOMMAND);
+    WSContentSend_PSSL(PSTR("{"));
+    bool cflg = false;
+    uint32_t index = curridx;
+    char* line;
+    size_t len;
+    while (GetLog(TasmotaGlobal.templog_level, &index, &line, &len)) {
+      // [14:49:36.123 MQTT: stat/wemos5/RESULT = {"POWER":"OFF"}] > [{"POWER":"OFF"}]
+      char* JSON = (char*)memchr(line, '{', len);
+      if (JSON) {  // Is it a JSON message (and not only [15:26:08 MQT: stat/wemos5/POWER = O])
+        size_t JSONlen = len - (JSON - line);
+        if (JSONlen > sizeof(TasmotaGlobal.mqtt_data)) { JSONlen = sizeof(TasmotaGlobal.mqtt_data); }
+        char stemp[JSONlen];
+        strlcpy(stemp, JSON +1, JSONlen -2);
+        WSContentSend_PSSL(PSTR("%s%s"), (cflg) ? "," : "", stemp);
+        cflg = true;
+      }
+    }
+    WSContentSend_PSSL(PSTR("}"));
+    TasmotaGlobal.templog_level = 0;
+  } else {
+    WSContentSend_PSSL(PSTR("{\"" D_RSLT_WARNING "\":\"" D_ENTER_COMMAND " cmnd=\"}"));
+  }
+  WSContentEndSSL();
+}
+
+
 
 /*-------------------------------------------------------------------------------------------*/
 
