@@ -721,7 +721,6 @@ void HandleRootSSL(void)
 #ifdef USE_SHUTTER
     if (Settings.flag3.shutter_mode) {  // SetOption80 - Enable shutter support
       for (uint32_t i = 0; i < TasmotaGlobal.shutters_present; i++) {
-        WSContentSend_PSSL(PSTR("----------USE_SHUTTER HandleRootSSL loop"));
         WSContentSend_PSSL(HTTP_MSG_SLIDER_SHUTTER, Settings.shutter_position[i], i+1);
       }
     }
