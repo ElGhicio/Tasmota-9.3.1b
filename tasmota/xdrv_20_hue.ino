@@ -431,14 +431,14 @@ void HandleUpnpSetupHue(void)
   description_xml.replace(F("{x1"), WiFi.localIP().toString());
   description_xml.replace(F("{x2"), HueUuid());
   description_xml.replace(F("{x3"), HueSerialnumber());
-  WSSend(200, CT_XML, description_xml);
+  WSSend(200, CT_XML, description_xml,WEB_HTTP);
 }
 
 void HueNotImplemented(String *path)
 {
   AddLog(LOG_LEVEL_DEBUG_MORE, PSTR(D_LOG_HTTP D_HUE_API_NOT_IMPLEMENTED " (%s)"), path->c_str());
 
-  WSSend(200, CT_APP_JSON, PSTR("{}"));
+  WSSend(200, CT_APP_JSON, PSTR("{}"),WEB_HTTP);
 }
 
 void HueConfigResponse(String *response)
@@ -457,7 +457,7 @@ void HueConfig(String *path)
 {
   String response = "";
   HueConfigResponse(&response);
-  WSSend(200, CT_APP_JSON, response);
+  WSSend(200, CT_APP_JSON, response,WEB_HTTP);
 }
 
 // device is forced to CT mode instead of HSB
@@ -680,7 +680,7 @@ void HueGlobalConfig(String *path) {
   response += F("},\"groups\":{},\"schedules\":{},\"config\":");
   HueConfigResponse(&response);
   response += F("}");
-  WSSend(200, CT_APP_JSON, response);
+  WSSend(200, CT_APP_JSON, response,WEB_HTTP);
 }
 
 void HueAuthentication(String *path)
@@ -688,7 +688,7 @@ void HueAuthentication(String *path)
   char response[38];
 
   snprintf_P(response, sizeof(response), PSTR("[{\"success\":{\"username\":\"%s\"}}]"), GetHueUserId().c_str());
-  WSSend(200, CT_APP_JSON, response);
+  WSSend(200, CT_APP_JSON, response,WEB_HTTP);
   AddLog(LOG_LEVEL_DEBUG_MORE, PSTR(D_LOG_HTTP D_HUE " Authentication Result (%s)"), response);
 }
 
@@ -996,7 +996,7 @@ void HueLights(String *path)
   }
   exit:
   AddLog(LOG_LEVEL_DEBUG_MORE, PSTR(D_LOG_HTTP D_HUE " Result (%s)"), response.c_str());
-  WSSend(code, CT_APP_JSON, response);
+  WSSend(code, CT_APP_JSON, response,WEB_HTTP);
 }
 
 void HueGroups(String *path)
@@ -1029,7 +1029,7 @@ void HueGroups(String *path)
   }
 
   AddLog(LOG_LEVEL_DEBUG_MORE, PSTR(D_LOG_HTTP D_HUE " HueGroups Result (%s)"), path->c_str());
-  WSSend(200, CT_APP_JSON, response);
+  WSSend(200, CT_APP_JSON, response,WEB_HTTP);
 }
 
 void HandleHueApi(String *path)

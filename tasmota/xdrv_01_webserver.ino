@@ -34,6 +34,8 @@
 \*********************************************************************************************/
 
 #define XDRV_01                               1
+#define WEB_HTTP                              0
+#define WEB_HTTPS                             1
 
 // Enable below demo feature only if defines USE_UNISHOX_COMPRESSION and USE_SCRIPT_WEB_DISPLAY are disabled
 //#define USE_WEB_SSE
@@ -604,7 +606,7 @@ void setClock()
 void HandleRootSSL(void)
 {
 
-  AddLog(LOG_LEVEL_DEBUG, PSTR("Funz. Start HandleRootSSL"));
+  //AddLog(LOG_LEVEL_DEBUG, PSTR("Funz. Start HandleRootSSL"));
 
   if (CaptivePortalSSL()) { return; }  // If captive portal redirect instead of displaying the page.
 
@@ -839,8 +841,6 @@ if (Settings.flag_https) {
 
 //    configTime(3 * 3600, 0, "pool.ntp.org", "time.nist.gov");
 
-
-
 while (WiFi.status() != WL_CONNECTED) {
   delay(500);
   Serial.print(".");
@@ -1007,23 +1007,24 @@ void PollDnsWebserver(void)
 
 /*********************************************************************************************/
 
-bool WebAuthenticate(void)
-{
-  if (strlen(SettingsText(SET_WEBPWD)) && (HTTP_MANAGER_RESET_ONLY != Web.state)) {
-    return Webserver->authenticate(WEB_USERNAME, SettingsText(SET_WEBPWD));
-  } else {
-    return true;
-  }
-}
 
 //MP
-bool WebAuthenticateSSL(void)
+bool WebAuthenticate(bool typeWeb)
 {
-  if (strlen(SettingsText(SET_WEBPWD)) && (HTTP_MANAGER_RESET_ONLY != Web.state)) {
-    return WebserverSSL->authenticate(WEB_USERNAME, SettingsText(SET_WEBPWD));
-  } else {
-    return true;
+  if (!typeWeb){
+    if (strlen(SettingsText(SET_WEBPWD)) && (HTTP_MANAGER_RESET_ONLY != Web.state)) {
+      return Webserver->authenticate(WEB_USERNAME, SettingsText(SET_WEBPWD));
+    } else {
+      return true;
+    }
+  }else{
+    if (strlen(SettingsText(SET_WEBPWD)) && (HTTP_MANAGER_RESET_ONLY != Web.state)) {
+      return WebserverSSL->authenticate(WEB_USERNAME, SettingsText(SET_WEBPWD));
+    } else {
+      return true;
+    }
   }
+
 }
 
 bool HttpCheckPriviledgedAccess(bool autorequestauth = true)
@@ -1033,7 +1034,7 @@ bool HttpCheckPriviledgedAccess(bool autorequestauth = true)
     HandleRoot();
     return false;
   }
-  if (autorequestauth && !WebAuthenticate()) {
+  if (autorequestauth && !WebAuthenticate(WEB_HTTP)) {
     Webserver->requestAuthentication();
     return false;
   }
@@ -1047,65 +1048,58 @@ bool HttpCheckPriviledgedAccessSSL(bool autorequestauth = true)
     HandleRootSSL();
     return false;
   }
-  if (autorequestauth && !WebAuthenticateSSL()) {
+  if (autorequestauth && !WebAuthenticate(WEB_HTTPS)) {
     WebserverSSL->requestAuthentication();
     return false;
   }
   return true;
 }
 
-void HttpHeaderCors(void)
+void HttpHeaderCors(bool typeWeb)
 {
+
   if (strlen(SettingsText(SET_CORS))) {
-    Webserver->sendHeader(F("Access-Control-Allow-Origin"), SettingsText(SET_CORS));
+    if (!typeWeb)
+      Webserver->sendHeader(F("Access-Control-Allow-Origin"), SettingsText(SET_CORS));
+    else
+      WebserverSSL->sendHeader(F("Access-Control-Allow-Origin"), SettingsText(SET_CORS));
   }
 }
 
-void HttpHeaderCorsSSL(void)
+void WSHeaderSend(bool typeWeb)
 {
-  if (strlen(SettingsText(SET_CORS))) {
-    WebserverSSL->sendHeader(F("Access-Control-Allow-Origin"), SettingsText(SET_CORS));
+  char server[32];
+
+  snprintf_P(server, sizeof(server), PSTR("Tasmota/%s (%s)"), TasmotaGlobal.version, GetDeviceHardware().c_str());
+
+  if (!typeWeb){
+    Webserver->sendHeader(F("Server"), server);
+    Webserver->sendHeader(F("Cache-Control"), F("no-cache, no-store, must-revalidate"));
+    Webserver->sendHeader(F("Pragma"), F("no-cache"));
+    Webserver->sendHeader(F("Expires"), F("-1"));
+    HttpHeaderCors(WEB_HTTP);
+  }else{
+    WebserverSSL->sendHeader(F("Server"), server);
+    WebserverSSL->sendHeader(F("Cache-Control"), F("no-cache, no-store, must-revalidate"));
+    WebserverSSL->sendHeader(F("Pragma"), F("no-cache"));
+    WebserverSSL->sendHeader(F("Expires"), F("-1"));
+    HttpHeaderCors(WEB_HTTPS);
   }
 }
 
-void WSHeaderSend(void)
-{
-  char server[32];
-  snprintf_P(server, sizeof(server), PSTR("Tasmota/%s (%s)"), TasmotaGlobal.version, GetDeviceHardware().c_str());
-  Webserver->sendHeader(F("Server"), server);
-  Webserver->sendHeader(F("Cache-Control"), F("no-cache, no-store, must-revalidate"));
-  Webserver->sendHeader(F("Pragma"), F("no-cache"));
-  Webserver->sendHeader(F("Expires"), F("-1"));
-  HttpHeaderCors();
-}
-
-//MP
-void WSHeaderSendSSL(void)
-{
-  char server[32];
-  snprintf_P(server, sizeof(server), PSTR("Tasmota/%s (%s)"), TasmotaGlobal.version, GetDeviceHardware().c_str());
-  WebserverSSL->sendHeader(F("Server"), server);
-  WebserverSSL->sendHeader(F("Cache-Control"), F("no-cache, no-store, must-revalidate"));
-  WebserverSSL->sendHeader(F("Pragma"), F("no-cache"));
-  WebserverSSL->sendHeader(F("Expires"), F("-1"));
-  HttpHeaderCorsSSL();
-}
 /**********************************************************************************************
 * HTTP Content Page handler
 **********************************************************************************************/
 
-void WSSend(int code, int ctype, const String& content)
+void WSSend(int code, int ctype, const String& content, bool typeWeb)
 {
   char ct[25];  // strlen("application/octet-stream") +1 = Longest Content type string
-  Webserver->send(code, GetTextIndexed(ct, sizeof(ct), ctype, kContentTypes), content);
+  if (!typeWeb)
+    Webserver->send(code, GetTextIndexed(ct, sizeof(ct), ctype, kContentTypes), content);
+  else
+    WebserverSSL->send(code, GetTextIndexed(ct, sizeof(ct), ctype, kContentTypes), content);
 }
 
-//MP
-void WSSendSSL(int code, int ctype, const String& content)
-{
-  char ct[25];  // strlen("application/octet-stream") +1 = Longest Content type string
-  WebserverSSL->send(code, GetTextIndexed(ct, sizeof(ct), ctype, kContentTypes), content);
-}
 /**********************************************************************************************
 * HTTP Content Chunk handler
 **********************************************************************************************/
@@ -1113,9 +1107,9 @@ void WSSendSSL(int code, int ctype, const String& content)
 void WSContentBegin(int code, int ctype)
 {
   Webserver->client().flush();
-  WSHeaderSend();
+  WSHeaderSend(WEB_HTTP);
   Webserver->setContentLength(CONTENT_LENGTH_UNKNOWN);
-  WSSend(code, ctype, "");                        // Signal start of chunked content
+  WSSend(code, ctype, "",WEB_HTTP);                        // Signal start of chunked content
   Web.chunk_buffer = "";
 }
 
@@ -1123,9 +1117,9 @@ void WSContentBegin(int code, int ctype)
 void WSContentBeginSSL(int code, int ctype)
 {
   WebserverSSL->client().flush();
-  WSHeaderSendSSL();
+  WSHeaderSend(WEB_HTTPS);
   WebserverSSL->setContentLength(CONTENT_LENGTH_UNKNOWN);
-  WSSendSSL(code, ctype, "");                        // Signal start of chunked content
+  WSSend(code, ctype, "",WEB_HTTPS);                        // Signal start of chunked content
   Web.chunk_buffer = "";
 }
 
@@ -1306,7 +1300,7 @@ void WSContentSend_PDSSL(const char* formatP, ...)    // Content send snprintf_P
 
 void WSContentStart_P(const char* title, bool auth)
 {
-  if (auth && !WebAuthenticate()) {
+  if (auth && !WebAuthenticate(WEB_HTTP)) {
     return Webserver->requestAuthentication();
   }
 
@@ -1320,7 +1314,7 @@ void WSContentStart_P(const char* title, bool auth)
 //MP
 void WSContentStart_PSSL(const char* title, bool auth)
 {
-  if (auth && !WebAuthenticateSSL()) {
+  if (auth && !WebAuthenticate(WEB_HTTPS)) {
     return WebserverSSL->requestAuthentication();
   }
 
@@ -1914,7 +1908,7 @@ void HandleRoot(void)
 
 bool HandleRootStatusRefresh(void)
 {
-  if (!WebAuthenticate()) {
+  if (!WebAuthenticate(WEB_HTTP)) {
     Webserver->requestAuthentication();
     return true;
   }
@@ -2088,7 +2082,7 @@ bool HandleRootStatusRefreshSSL(void)
 {
 
 
-  if (!WebAuthenticateSSL()) {
+  if (!WebAuthenticate(WEB_HTTPS)) {
     WebserverSSL->requestAuthentication();
     return true;
   }
@@ -3176,7 +3170,7 @@ void HandleBackupConfiguration(void)
 
   Webserver->sendHeader(F("Content-Disposition"), attachment);
 
-  WSSend(200, CT_APP_STREAM, "");
+  WSSend(200, CT_APP_STREAM, "",WEB_HTTP);
 
   uint32_t cfg_crc32 = Settings.cfg_crc32;
   Settings.cfg_crc32 = GetSettingsCrc32();  // Calculate crc (again) as it might be wrong when savedata = 0 (#3918)
@@ -4065,18 +4059,18 @@ void HandleUploadLoop(void) {
 
 void HandlePreflightRequest(void)
 {
-  HttpHeaderCors();
+  HttpHeaderCors(WEB_HTTP);
   Webserver->sendHeader(F("Access-Control-Allow-Methods"), F("GET, POST"));
   Webserver->sendHeader(F("Access-Control-Allow-Headers"), F("authorization"));
-  WSSend(200, CT_HTML, "");
+  WSSend(200, CT_HTML, "",WEB_HTTP);
 }
 
 void HandlePreflightRequestSSL(void)
 {
-  HttpHeaderCors();
+  HttpHeaderCors(WEB_HTTP);
   WebserverSSL->sendHeader(F("Access-Control-Allow-Methods"), F("GET, POST"));
   WebserverSSL->sendHeader(F("Access-Control-Allow-Headers"), F("authorization"));
-  WSSendSSL(200, CT_HTML, "");
+  WSSend(200, CT_HTML, "",WEB_HTTPS);
 }
 
 /*-------------------------------------------------------------------------------------------*/
@@ -4087,7 +4081,7 @@ void HandleHttpCommand(void)
 
   AddLog(LOG_LEVEL_DEBUG, PSTR(D_LOG_HTTP D_COMMAND));
 
-  if (!WebAuthenticate()) {
+  if (!WebAuthenticate(WEB_HTTP)) {
     // Prefer authorization via HTTP header (Basic auth), if it fails, use legacy method via GET parameters
     char tmp1[33];
     WebGetArg(PSTR("user"), tmp1, sizeof(tmp1));
@@ -4136,11 +4130,11 @@ void HandleHttpCommand(void)
 
 void HandleHttpCommandSSL(void)
 {
-  if (!HttpCheckPriviledgedAccessSSL(false)) { return; }
-
   AddLog(LOG_LEVEL_DEBUG, PSTR(D_LOG_HTTP D_COMMAND));
 
-  if (!WebAuthenticateSSL()) {
+  if (!HttpCheckPriviledgedAccessSSL(false)) { return; }
+
+  if (!WebAuthenticate(WEB_HTTPS)) {
     // Prefer authorization via HTTP header (Basic auth), if it fails, use legacy method via GET parameters
     char tmp1[33];
     WebGetArgSSL(PSTR("user"), tmp1, sizeof(tmp1));
@@ -4301,7 +4295,7 @@ bool CaptivePortal(void)
     AddLog(LOG_LEVEL_DEBUG, PSTR(D_LOG_HTTP D_REDIRECTED));
 
     Webserver->sendHeader(F("Location"), String(F("http://")) + Webserver->client().localIP().toString(), true);
-    WSSend(302, CT_PLAIN, "");  // Empty content inhibits Content-length header so we have to close the socket ourselves.
+    WSSend(302, CT_PLAIN, "",WEB_HTTP);  // Empty content inhibits Content-length header so we have to close the socket ourselves.
     Webserver->client().stop();  // Stop is needed because we sent no content length
     return true;
   }
@@ -4315,7 +4309,7 @@ bool CaptivePortalSSL(void)
     AddLog(LOG_LEVEL_DEBUG, PSTR(D_LOG_HTTP D_REDIRECTED));
 
     WebserverSSL->sendHeader(F("Location"), String(F("https://")) + WebserverSSL->client().localIP().toString(), true);
-    WSSendSSL(302, CT_PLAIN, "");  // Empty content inhibits Content-length header so we have to close the socket ourselves.
+    WSSend(302, CT_PLAIN, "",WEB_HTTPS);  // Empty content inhibits Content-length header so we have to close the socket ourselves.
     WebserverSSL->client().stop();  // Stop is needed because we sent no content length
     return true;
   }
