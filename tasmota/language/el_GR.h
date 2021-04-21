@@ -321,6 +321,9 @@
 #define D_SINGLE_DEVICE "μονή συσκευή"
 #define D_MULTI_DEVICE "πολλαπλές συσκευές"
 
+#define D_WEB_PORT "Web Port"
+#define D_WEB_SSL "TaSMota S for HTTPS"
+
 #define D_CONFIGURE_TEMPLATE "Πρότυπα"
 #define D_TEMPLATE_PARAMETERS "Παράμετροι Πρότυπου"
 #define D_TEMPLATE_NAME "Όνομα"

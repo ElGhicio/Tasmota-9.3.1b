@@ -321,6 +321,9 @@
 #define D_SINGLE_DEVICE "pojedyńcze urządzenie"
 #define D_MULTI_DEVICE "multi urządzenie"
 
+#define D_WEB_PORT "Web Port"
+#define D_WEB_SSL "TaSMota S for HTTPS"
+
 #define D_CONFIGURE_TEMPLATE "Konfiguracja szablonu"
 #define D_TEMPLATE_PARAMETERS "Parametry szablonu"
 #define D_TEMPLATE_NAME "Nazwa"

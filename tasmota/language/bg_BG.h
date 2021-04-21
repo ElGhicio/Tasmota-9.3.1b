@@ -321,6 +321,9 @@
 #define D_SINGLE_DEVICE "Единично"
 #define D_MULTI_DEVICE "Мулти"
 
+#define D_WEB_PORT "Web Port"
+#define D_WEB_SSL "TaSMota S for HTTPS"
+
 #define D_CONFIGURE_TEMPLATE "Конфигуриране на шаблон"
 #define D_TEMPLATE_PARAMETERS "Параметри на шаблона"
 #define D_TEMPLATE_NAME "Име"

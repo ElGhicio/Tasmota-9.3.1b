@@ -321,6 +321,9 @@
 #define D_SINGLE_DEVICE "dispositivo único"
 #define D_MULTI_DEVICE "dispositivo múltiplo"
 
+#define D_WEB_PORT "Web Port"
+#define D_WEB_SSL "TaSMota S for HTTPS"
+
 #define D_CONFIGURE_TEMPLATE "Configurar Modelo"
 #define D_TEMPLATE_PARAMETERS "Parametros do Modelo"
 #define D_TEMPLATE_NAME "Nome do Modelo"

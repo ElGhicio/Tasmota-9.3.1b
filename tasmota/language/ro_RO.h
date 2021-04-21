@@ -321,6 +321,9 @@
 #define D_SINGLE_DEVICE "echipament unic"
 #define D_MULTI_DEVICE "echipament multiplu"
 
+#define D_WEB_PORT "Web Port"
+#define D_WEB_SSL "TaSMota S for HTTPS"
+
 #define D_CONFIGURE_TEMPLATE "Configurare Template"
 #define D_TEMPLATE_PARAMETERS "Parametri Template"
 #define D_TEMPLATE_NAME "Nume"

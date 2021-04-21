@@ -321,6 +321,9 @@
 #define D_SINGLE_DEVICE "單個裝置"
 #define D_MULTI_DEVICE "多重裝置"
 
+#define D_WEB_PORT "Web Port"
+#define D_WEB_SSL "TaSMota S for HTTPS"
+
 #define D_CONFIGURE_TEMPLATE "模板設定"
 #define D_TEMPLATE_PARAMETERS "模板參數"
 #define D_TEMPLATE_NAME "名稱"

@@ -351,6 +351,9 @@
 #define D_FLASH_CHIP_SIZE "Flash Size"
 #define D_FREE_PROGRAM_SPACE "Free Program Space"
 
+#define D_WEB_PORT "Web Port"
+#define D_WEB_SSL "TaSMota S for HTTPS"
+
 #define D_UPGRADE_BY_WEBSERVER "Upgrade by web server"
 #define D_OTA_URL "OTA Url"
 #define D_START_UPGRADE "Start upgrade"

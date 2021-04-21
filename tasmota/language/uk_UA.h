@@ -308,6 +308,9 @@
 #define D_SYSLOG_PORT "Syslog порт"
 #define D_TELEMETRY_PERIOD "Період телеметрії"
 
+#define D_WEB_PORT "Web Port"
+#define D_WEB_SSL "TaSMota S for HTTPS"
+
 #define D_OTHER_PARAMETERS "Параметри Інше"
 #define D_TEMPLATE "Шаблони"
 #define D_ACTIVATE "Активований"

@@ -321,6 +321,9 @@
 #define D_SINGLE_DEVICE " một thiết bị"
 #define D_MULTI_DEVICE "nhiều thiết bị"
 
+#define D_WEB_PORT "Web Port"
+#define D_WEB_SSL "TaSMota S for HTTPS"
+
 #define D_CONFIGURE_TEMPLATE "Cấu hình mẫu"
 #define D_TEMPLATE_PARAMETERS "Các thông số mẫu"
 #define D_TEMPLATE_NAME "Tên"

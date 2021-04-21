@@ -394,6 +394,9 @@
 #define D_MULTICAST_JOIN_FAILED "Multicast 가입 실패"
 #define D_FAILED_TO_SEND_RESPONSE "요청 전송 실패"
 
+#define D_WEB_PORT "Web Port"
+#define D_WEB_SSL "TaSMota S for HTTPS"
+
 #define D_WEMO "WeMo"
 #define D_WEMO_BASIC_EVENT "WeMo 기본 이벤트"
 #define D_WEMO_EVENT_SERVICE "WeMo 이벤트 서비스"

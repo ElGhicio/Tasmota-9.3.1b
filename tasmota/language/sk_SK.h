@@ -351,6 +351,9 @@
 #define D_FLASH_CHIP_SIZE "Veľkosť flash"
 #define D_FREE_PROGRAM_SPACE "Voľné místo pre program"
 
+#define D_WEB_PORT "Web Port"
+#define D_WEB_SSL "TaSMota S for HTTPS"
+
 #define D_UPGRADE_BY_WEBSERVER "Aktualizácia z Web serveru"
 #define D_OTA_URL "URL OTA"
 #define D_START_UPGRADE "Spustiť aktualizáciu"

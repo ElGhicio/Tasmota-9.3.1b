@@ -351,6 +351,9 @@
 #define D_FLASH_CHIP_SIZE "Flash Grutte"
 #define D_FREE_PROGRAM_SPACE "Fergese programmaromte"
 
+#define D_WEB_PORT "Web Port"
+#define D_WEB_SSL "TaSMota S for HTTPS"
+
 #define D_UPGRADE_BY_WEBSERVER "Upgrade fia webserver"
 #define D_OTA_URL "OTA Url"
 #define D_START_UPGRADE "Begjin upgrade"

@@ -351,6 +351,9 @@
 #define D_FLASH_CHIP_SIZE "גודל זיכרון פלאש"
 #define D_FREE_PROGRAM_SPACE "מקום פנוי - תוכנה"
 
+#define D_WEB_PORT "Web Port"
+#define D_WEB_SSL "TaSMota S for HTTPS"
+
 #define D_UPGRADE_BY_WEBSERVER "שדרוג קושחה"
 #define D_OTA_URL "OTA כתובת"
 #define D_START_UPGRADE "התחל בשדרוג"

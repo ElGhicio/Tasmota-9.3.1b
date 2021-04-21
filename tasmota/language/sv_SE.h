@@ -327,6 +327,9 @@
 #define D_BASE_TYPE "Based on"
 #define D_TEMPLATE_FLAGS "Options"
 
+#define D_WEB_PORT "Web Port"
+#define D_WEB_SSL "TaSMota S for HTTPS"
+
 #define D_SAVE_CONFIGURATION "Spara konfiguration"
 #define D_CONFIGURATION_SAVED "Konfiguration sparad"
 #define D_CONFIGURATION_RESET "Konfiguration nollställd"

@@ -321,6 +321,9 @@
 #define D_SINGLE_DEVICE "enkele toestel"
 #define D_MULTI_DEVICE "multi toestel"
 
+#define D_WEB_PORT "Web Port"
+#define D_WEB_SSL "TaSMota S for HTTPS"
+
 #define D_CONFIGURE_TEMPLATE "Konfigureer sjabloon"
 #define D_TEMPLATE_PARAMETERS "Sjabloon parameters"
 #define D_TEMPLATE_NAME "Naam"
