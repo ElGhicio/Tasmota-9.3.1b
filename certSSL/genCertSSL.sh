@@ -31,9 +31,9 @@ distinguished_name = req_distinguished_name
 prompt = no
 [ req_distinguished_name ]
 O = El Ghicio
-CN = 192.168.1.135
-C = IT
-ST = Napoli
+CN = XXX.XXX.XXX.XXX
+C = XX
+ST = xxXXXXxx
 EOF
 openssl req -out tls.ca_x509.req -key tls.ca_key.pem -new -config certs.conf
 openssl req -out tls.x509_$BITS.req -key tls.key_$BITS.pem -new -config certs.conf
