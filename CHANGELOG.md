@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file.
 
 ## [Released]
+## [9.3.1b] 20210320
+- El Ghicio
+
+## [9.3.0.1b]
+### Added
+- HTTPS, ssl
+
+### Fixed
+- Small semanthics
 
 ## [9.3.1] 20210223
 - Release Kenneth
