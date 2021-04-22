@@ -3,7 +3,7 @@
 Alternative firmware for [ESP8266](https://en.wikipedia.org/wiki/ESP8266) based devices with **easy configuration using webUI, OTA updates, automation using timers or rules, expandability and entirely local control over MQTT, HTTP, HTTPS, Serial or KNX**.
 _Written for PlatformIO with limited support for Arduino IDE._
 
-[![GitHub version](https://img.shields.io/github/release/arendst/Tasmota.svg)](https://github.com/ElGhicio/Tasmota-9.3.1b/releases/tag/9.3.1b)
+[![GitHub version](https://github.com/ElGhicio/Tasmota-9.3.1b/releases/latest)](https://github.com/ElGhicio/Tasmota-9.3.1b/releases/tag/9.3.1b)
 [![GitHub download](https://img.shields.io/github/downloads/arendst/Tasmota/total.svg)](https://github.com/arendst/Tasmota/releases/latest)
 [![License](https://img.shields.io/github/license/arendst/Tasmota.svg)](LICENSE.txt)
 [![Chat](https://img.shields.io/discord/479389167382691863.svg)](https://discord.gg/Ks2Kzd4)
