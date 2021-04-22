@@ -1548,8 +1548,6 @@ void WSContentStop(void)
   WSContentEnd();
 }
 
-
-
 //MP
 void WSContentStopSSL(void)
 {
@@ -1561,7 +1559,6 @@ void WSContentStopSSL(void)
   WSContentSend_PSSL(HTTP_END, TasmotaGlobal.version);
   WSContentEndSSL();
 }
-
 
 /*********************************************************************************************/
 
